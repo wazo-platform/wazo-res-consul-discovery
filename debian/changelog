@@ -1,0 +1,5 @@
+wazo-res-consul-discovery (0.0.1) wazo-dev; urgency=medium
+
+  * Initial release.
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Thu, 15 Oct 2020 10:02:00 -0400
