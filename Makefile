@@ -47,6 +47,7 @@ install: $(TARGET)
 	mkdir -p $(DESTDIR)$(DOCUMENTATION_DIR)
 	mkdir -p $(DESTDIR)$(ASTINCDIR)
 	install -m 755 $(TARGET) $(DESTDIR)$(MODULES_DIR)
+	install -m 644 documentation/* $(DESTDIR)$(DOCUMENTATION_DIR)
 	@echo " +----------- res_consul_discovery installed ------------+"
 	@echo " +                                                       +"
 	@echo " + res_consul_discovery has successfully been installed  +"
