@@ -1,70 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE docs SYSTEM "appdocsxml.dtd">
 <docs xmlns:xi="http://www.w3.org/2001/XInclude">
-   <configInfo name="res_consul_discovery" language="en_US">
-       <synopsis>Consul discovery service</synopsis>
-       <configFile name="res_consul_discovery.conf">
-           <configObject name="general">
-               <synopsis>General configuration settings</synopsis>
-               <configOption name="enabled">
-                   <synopsis>Enable/disable the Consul discovery module</synopsis>
-                   <description>
-                       <para>This option enables or disables the consul discovery module.</para>
-                   </description>
-               </configOption>
-           </configObject>
+    <configInfo name="res_consul_discovery" language="en_US">
+        <synopsis>Consul discovery service</synopsis>
+        <configFile name="res_consul_discovery.conf">
+            <configObject name="general">
+                <synopsis>General configuration settings</synopsis>
+                <configOption name="enabled">
+                    <synopsis>Enable/disable the Consul discovery module</synopsis>
+                    <description>
+                        <para>This option enables or disables the consul discovery module.</para>
+                    </description>
+                </configOption>
+            </configObject>
 
-           <configObject name="consul">
-               <synopsis>Per-connection configuration settings</synopsis>
-               <configOption name="id">
-                   <synopsis>Set id or auto to generate it, or asterisk to use the asterisk ID.</synopsis>
-                   <description>
-                       <para>Set id or auto to generate it, or asterisk to use the asterisk ID.</para>
-                   </description>
-               </configOption>
-               <configOption name="name">
-                   <synopsis>Set name or auto to discovery with hostname</synopsis>
-                   <description>
-                       <para>Set name or auto to discovery with hostname</para>
-                   </description>
-               </configOption>
-               <configOption name="tag">
-                   <synopsis>Tag in consul catalog</synopsis>
-                   <description>
-                       <para>Tag in consul catalog</para>
-                   </description>
-               </configOption>
-               <configOption name="discovery_ip">
-                   <synopsis></synopsis>
-                   <description>
-                       <para></para>
-                   </description>
-               </configOption>
-               <configOption name="discovery_port">
-                   <synopsis></synopsis>
-                   <description>
-                       <para></para>
-                   </description>
-               </configOption>
-               <configOption name="discovery_interface">
-                   <synopsis></synopsis>
-                   <description>
-                       <para></para>
-                   </description>
-               </configOption>
-               <configOption name="check">
-                   <synopsis></synopsis>
-                   <description>
-                       <para></para>
-                   </description>
-               </configOption>
-               <configOption name="check_http_port">
-                   <synopsis></synopsis>
-                   <description>
-                       <para></para>
-                   </description>
-               </configOption>
-           </configObject>
-       </configFile>
-   </configInfo>
+            <configObject name="consul">
+                <synopsis>Per-connection configuration settings</synopsis>
+                <configOption name="id">
+                    <synopsis>Set id or auto to generate it, or asterisk to use the asterisk ID.</synopsis>
+                    <description>
+                        <para>Set id or auto to generate it, or asterisk to use the asterisk ID.</para>
+                    </description>
+                </configOption>
+                <configOption name="name">
+                    <synopsis>Set name or auto to discovery with hostname</synopsis>
+                    <description>
+                        <para>Set name or auto to discovery with hostname</para>
+                    </description>
+                </configOption>
+                <configOption name="tag">
+                    <synopsis>Tag in consul catalog</synopsis>
+                    <description>
+                        <para>Tag in consul catalog</para>
+                    </description>
+                </configOption>
+                <configOption name="discovery_ip">
+                    <synopsis></synopsis>
+                    <description>
+                        <para></para>
+                    </description>
+                </configOption>
+                <configOption name="discovery_port">
+                    <synopsis></synopsis>
+                    <description>
+                        <para></para>
+                    </description>
+                </configOption>
+                <configOption name="discovery_interface">
+                    <synopsis></synopsis>
+                    <description>
+                        <para></para>
+                    </description>
+                </configOption>
+                <configOption name="check">
+                    <synopsis></synopsis>
+                    <description>
+                        <para></para>
+                    </description>
+                </configOption>
+                <configOption name="check_http_port">
+                    <synopsis></synopsis>
+                    <description>
+                        <para></para>
+                    </description>
+                </configOption>
+            </configObject>
+        </configFile>
+    </configInfo>
+    <manager name="DiscoverySetMaintenance" language="en_US">
+        <synopsis>Discovery consul</synopsis>
+        <description>
+            <para>...</para>
+        </description>
+    </manager>
+    <managerEvent language="en_US" name="DiscoveryRegister">
+        <managerEventInstance class="EVENT_FLAG_SYSTEM">
+            <synopsis>Raised when are registred to consul.</synopsis>
+            <syntax>
+                <xi:include xpointer="xpointer(/docs/managerEvent[@name='DiscoveryRegister']/managerEventInstance/syntax/parameter)" />
+            </syntax>
+            <see-also>
+                <ref type="managerEvent">DiscoveryDeregister</ref>
+            </see-also>
+        </managerEventInstance>
+    </managerEvent>
+    <managerEvent language="en_US" name="DiscoveryDeregister">
+        <managerEventInstance class="EVENT_FLAG_SYSTEM">
+            <synopsis>Raised when are deregistred to consul.</synopsis>
+            <syntax>
+                <xi:include xpointer="xpointer(/docs/managerEvent[@name='DiscoveryDeregister']/managerEventInstance/syntax/parameter)" />
+            </syntax>
+            <see-also>
+                <ref type="managerEvent">DiscoveryDeregister</ref>
+            </see-also>
+        </managerEventInstance>
+    </managerEvent>
+    <managerEvent language="en_US" name="DiscoverySetMaintenance">
+        <managerEventInstance class="EVENT_FLAG_SYSTEM">
+            <synopsis>Raised when you set maintenance.</synopsis>
+            <syntax>
+                 <xi:include xpointer="xpointer(/docs/managerEvent[@name='DiscoveryDeregister']/managerEventInstance/syntax/parameter)" />
+            </syntax>
+        </managerEventInstance>
+    </managerEvent>
 </docs>
