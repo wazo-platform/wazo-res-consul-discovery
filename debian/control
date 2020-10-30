@@ -2,12 +2,12 @@ Source: wazo-res-consul-discovery
 Section: comm
 Priority: extra
 Maintainer: Wazo Maintainers <dev@wazo.community>
-Build-Depends: debhelper (>= 9), asterisk-dev (>= 8:17)
+Build-Depends: debhelper (>= 9), asterisk-dev (>= 8:17), wazo-res-consul-dev
 Standards-Version: 3.9.6
 
 Package: wazo-res-consul-discovery
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, asterisk (>= 8:17)
+Depends: ${shlibs:Depends}, ${misc:Depends}, asterisk (>= 8:17), wazo-res-consul
 Description: Consul module for the Asterisk IPBX
  Connects to a Consul server for service discovering.
  .
