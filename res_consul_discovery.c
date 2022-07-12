@@ -145,6 +145,9 @@ struct discovery_config {
 	char token[256];
 	int check;
 	int check_http_port;
+    int check_tls;
+    char check_tls_server_name[256];
+    int check_tls_skip_verify;
 };
 
 static struct discovery_config global_config = {
@@ -156,7 +159,10 @@ static struct discovery_config global_config = {
 	.discovery_interface = "eth0",
 	.tags = "asterisk",
 	.check = 0,
-	.check_http_port = 8088
+	.check_http_port = 8088,
+    .check_tls = 0,
+    .check_tls_server_name = "",
+    .check_tls_skip_verify = 0
 };
 
 static const char config_file[] = "res_consul_discovery.conf";
@@ -171,14 +177,17 @@ static int consul_register(void* userdata)
 	const char *tags[2] = { &global_config.tags[0], NULL };
 	const char *meta[3] = { "eid", &global_config.eid[0], NULL };
 
+    struct ast_consul_service_check httpstatus_check;
+    char url_check[512];
 	if (global_config.check == 1) {
-		struct ast_consul_service_check httpstatus_check;
-		char url_check[512];
-
-		snprintf(url_check, sizeof(url_check), "http://%s:%d/httpstatus",
-				 global_config.discovery_ip, global_config.check_http_port);
+		snprintf(url_check, sizeof(url_check), "%s://%s:%d/httpstatus",
+                 global_config.check_tls ? "https" : "http", global_config.discovery_ip,
+                 global_config.check_http_port);
 		httpstatus_check.http = url_check;
 		httpstatus_check.interval = 15;
+        httpstatus_check.tls_server_name = ast_strlen_zero(global_config.check_tls_server_name) ? NULL
+                : global_config.check_tls_server_name;
+        httpstatus_check.tls_skip_verify = global_config.check_tls_skip_verify;
 		checks[0]  = &httpstatus_check;
 	}
 
@@ -285,10 +294,12 @@ static void load_config(int reload)
 	struct ast_flags config_flags = { reload ? CONFIG_FLAG_FILEUNCHANGED : 0 };
 	struct ast_variable *v;
 
-	int enabled, check;
+	int enabled, check, check_tls, check_tls_skip_verify;
 
 	enabled = 1;
 	check = 1;
+    check_tls = 1;
+    check_tls_skip_verify = 1;
 
 	if (!(cfg = ast_config_load(config_file, config_flags)) || cfg == CONFIG_STATUS_FILEINVALID) {
 		ast_log(LOG_ERROR, "res_discovery_consul configuration file '%s' not found\n", config_file);
@@ -332,7 +343,19 @@ static void load_config(int reload)
 			global_config.check = check;
 		} else if (!strcasecmp(v->name, "check_http_port")) {
 			global_config.check_http_port =  atoi(v->value);
-		}
+		} else if (!strcasecmp(v->name, "check_tls")) {
+            if (ast_true(v->value) == 0) {
+                check_tls = 0;
+            }
+            global_config.check_tls = check_tls;
+        } else if (!strcasecmp(v->name, "check_tls_server_name")) {
+            ast_copy_string(global_config.check_tls_server_name, v->value, strlen(v->value) + 1);
+        } else if (!strcasecmp(v->name, "check_tls_skip_verify")) {
+            if (ast_true(v->value) == 0) {
+                check_tls_skip_verify = 0;
+            }
+            global_config.check_tls_skip_verify = check_tls_skip_verify;
+        }
 	}
 
 	if (!strcasecmp(global_config.discovery_ip, "auto")) {
@@ -415,6 +438,9 @@ static char *discovery_cli_settings(struct ast_cli_entry *e, int cmd, struct ast
 	ast_cli(a->fd, "----------------\n");
 	ast_cli(a->fd, "Check: %d\n", global_config.check);
 	ast_cli(a->fd, "Check http port: %d\n\n", global_config.check_http_port);
+    ast_cli(a->fd, "Check TLS: %d\n", global_config.check_tls);
+    ast_cli(a->fd, "Check TLSServerName: %s\n", global_config.check_tls_server_name);
+    ast_cli(a->fd, "Check TLSSkipVerify: %d\n\n", global_config.check_tls_skip_verify);
 	ast_cli(a->fd, "----\n");
 
 	return NULL;
